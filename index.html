@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
+  <link rel="icon" type="image/png" href="./img/favicon_fotogram.png">
+
+  <title>Fotogram</title>
+</head>
+<body onload="renderImages()">
+  <header>
+    <img class="logo_img" src="./img/Fotogram_Logo.svg" alt="Logo Fotogram">
+  </header>
+
+  <main>
+    <h1>Mystical blue photo collection</h1>
+
+    <div onclick="toggleOverlay(false)" id="overlay" class="overlay d_none">
+      <div onclick="event.stopPropagation()" id="innerdialog" class="innerdialog">
+        <div id="info_picture_section" class="info_picture_section"></div>
+        <div id="big_picture_section" class="big_picture_section"></div>
+        <div id="left_right_close_section" class="left_right_close_section"></div>
+      </div>
+    </div>
+    <div id="allpicture" class="allpicture"></div>
+    </main>
+
+  <footer>
+     <img class="footer_logo_img" src="./img/favicon_fotogram.png" alt="Logo Fotogram">
+  </footer>
+</body>
+</html>
