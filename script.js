@@ -1,5 +1,6 @@
-const BASE = "./img/"; //Ordner
-let images = [ //Array edie Bilder und Information enthält
+
+const BASE = "./img/";
+let images = [
   { file: "fantasy-2925250_1280.jpg", title: "Fantasy-Landschaft", desc: "Burg in einer Fantasiewelt mit Wasserfall." },
   { file: "godafoss-1840758_1280.jpg", title: "Goðafoss Wasserfall", desc: "Breiter Wasserfall in Island." },
   { file: "gothic-3631291_1280.jpg", title: "Gotische Architektur", desc: "Dunkle Kathedrale im Nebel." },
@@ -12,22 +13,44 @@ let images = [ //Array edie Bilder und Information enthält
   { file: "sunrise-5084755_1280.jpg", title: "Sonnenaufgang", desc: "Orangefarbener Himmel über einem Feld." }
 ];
 
+
+
+let templates = {
+  renderImagesTemplates: (img, i) => `
+    <img class="images"
+         src="${BASE}${img.file}"
+         alt="${img.title}"
+         onclick="openImageOverlay(${i})"
+         onerror="console.error('Etwas stimmt nicht:', this.src)">
+  `,
+  showBigImageTemplates: ({ file, title }) => `
+    <img class="showBigImage" src="${BASE}${file}" alt="${title}">
+  `,
+  showImageInfoWithCloseButtonTemplates: ({ title, desc }) => `
+    <div class="img_meta">
+      <strong class="img_title">${title}</strong><br>
+      <small class="img_desc">${desc}</small>
+    </div>
+    <img onclick="toggleOverlay(false)" id="closebutton" class="overlay_closebutton"
+         src="./img/24490a18-dcbf-4a42-abb4-065c5b14220e.png" alt="Schließen">
+  `,
+  skipNavigationTemplates: (index, total) => `
+    <img onclick="nextImageL(${index})" class="skip_arrowLeft" src="./img/arrow_left_blue_mystic.png" alt="Zurück">
+    <h3>${index + 1} / ${total}</h3>
+    <img onclick="nextImageR(${index})" class="skip_arrowRight" src="./img/arrow_right_blue_mystic.png" alt="Weiter">
+  `
+};
+
+
+
+
 function renderImages() {
   const imgRef = document.getElementById("allpicture");
-  imgRef.innerHTML = ""; //entleert 
-
+  imgRef.innerHTML = "";
   for (let i = 0; i < images.length; i++) {
-    const img = images[i];
-    imgRef.innerHTML += `
-      <img class="images"
-           src="${BASE}${img.file}"
-           alt="${img.title}"
-           onclick="openImageOverlay(${i})"    
-           onerror="console.error('Etwas stimmt nicht:', this.src)">
-    `;
+    imgRef.innerHTML += templates.renderImagesTemplates(images[i], i);
   }
 }
-
 
 function openImageOverlay(index) {
   toggleOverlay(true);
@@ -35,43 +58,35 @@ function openImageOverlay(index) {
 }
 
 function toggleOverlay(show) {
-  const overlay = document.getElementById("overlay");
-  overlay.classList.toggle("d_none", !show);
+  document.getElementById("overlay").classList.toggle("d_none", !show);
 }
 
-
 function showBigImage(index) {
-  const { file, title, desc } = images[index];
-  document.getElementById("big_picture_section").innerHTML = `   
-      <img class="showBigImage" src="${BASE}${file}" alt="${title}">
-  `;
+  document.getElementById("big_picture_section").innerHTML =
+    templates.showBigImageTemplates(images[index]);
 }
 
 function showImageInfoWithCloseButton(index) {
-  const { title, desc } = images[index]; //Deatils zum Bild
-    document.getElementById("info_picture_section").innerHTML =`
-    <div class="img_meta">
-     <strong class="img_title">${title}</strong><br>
-       <small class="img_desc">${desc}</small>
-    </div>
-    <img onclick="toggleOverlay(false)" id="closebutton" class="overlay_closebutton" src="./img/24490a18-dcbf-4a42-abb4-065c5b14220e.png">
-  `;
+  document.getElementById("info_picture_section").innerHTML =
+    templates.showImageInfoWithCloseButtonTemplates(images[index]);
 }
-
 
 function skipNavigation(index) {
-  document.getElementById("left_right_close_section").innerHTML = `
-    <img onclick="nextImageL(${index})" class="skip_arrowLeft" src="./img/arrow_left_blue_mystic.png">
-    <h3>${index + 1} / ${images.length}</h3>
-    <img onclick="nextImageR(${index})" class="skip_arrowRight" src="./img/arrow_right_blue_mystic.png">
-  `;
+  document.getElementById("left_right_close_section").innerHTML =
+    templates.skipNavigationTemplates(index, images.length);
 }
 
-const nextImageR = index => showImageOverlay((index + 1) % images.length);//rechts
-const nextImageL = index => showImageOverlay((index - 1 + images.length) % images.length);//links
+function nextImageR(index) {
+  showImageOverlay((index + 1) % images.length);
+}
+
+function nextImageL(index) {
+  showImageOverlay((index - 1 + images.length) % images.length);
+}
 
 function showImageOverlay(i) {
-  skipNavigation(i); //7rechts,links
-  showBigImage(i); //zeigt Bild groß
-  showImageInfoWithCloseButton(i); //Beschreibung von dem Bild und Kreuz
+  skipNavigation(i);
+  showBigImage(i);
+  showImageInfoWithCloseButton(i);
 }
+
